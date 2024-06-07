@@ -4,3 +4,6 @@
 **/.vscode/*
 **/.idea/*
 .DS_Store
+**/*.db
+**/*.db-shm
+**/*.db-wal

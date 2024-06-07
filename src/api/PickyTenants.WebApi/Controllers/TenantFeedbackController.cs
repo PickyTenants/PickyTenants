@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PickyTenants.WebApi.Entities;
 
 namespace PickyTenants.WebApi.Controllers;
@@ -7,46 +8,62 @@ namespace PickyTenants.WebApi.Controllers;
 [Route("api/[controller]/[action]")]
 public class TenantFeedbackController : ControllerBase
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<TenantFeedbackController> _logger;
-
-    public TenantFeedbackController(ILogger<TenantFeedbackController> logger)
+    private readonly PickyTenantsDbContext _dbContext;
+    
+    public TenantFeedbackController(ILogger<TenantFeedbackController> logger, PickyTenantsDbContext dbContext)
     {
         _logger = logger;
-    }
-
-    [HttpGet]
-    public string Test()
-    {
-        return "Hello World!";
+        _dbContext = dbContext;
     }
     
     [HttpPut]
-    public async Task<bool> AddReview([FromBody] Review review)
+    public async Task<bool> AddReview()
     {
-        return true;
+        try
+        {
+            var property = new Property
+            {
+                Address = "123 Main St",
+                Lat = 123,
+                Lng = 456
+            };
+            _dbContext.Properties.Add(property);
+            _dbContext.SaveChanges();
+            _dbContext.Reviews.Add(new Review
+            {
+                TenantName = "John Doe",
+                CreatedAt = DateTimeOffset.Now,
+                Title = "Great place",
+                Summary = "I loved it",
+                Details = "I would recommend this place to anyone",
+                PropertyId = property.Id
+            });
+            return await _dbContext.SaveChangesAsync() == 1;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
     
     [HttpGet]
     public async Task<IEnumerable<Review>> SearchReviews()
     {
-        return Enumerable.Range(1, 5).Select(index => new Review
-        {
-            
-        })
-        .ToArray();
+        return await _dbContext
+            .Reviews
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
     
     [HttpGet]
     public async Task<Review> GetReviewDetails(int id)
     {
-        return new Review
-        {
-            
-        };
+        return await _dbContext
+            .Reviews
+            .Where(r => r.Id == id)
+            .FirstAsync()
+            .ConfigureAwait(false);
     }
 }
