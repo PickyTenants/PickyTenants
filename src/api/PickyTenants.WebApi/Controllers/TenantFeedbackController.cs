@@ -90,8 +90,7 @@ public class TenantFeedbackController : ControllerBase
     {
         return await _dbContext
             .Reviews
-            .Where(r => r.Id == id)
-            .FirstAsync()
+            .FirstAsync(r => r.Id == id)
             .ConfigureAwait(false);
     }
 }
