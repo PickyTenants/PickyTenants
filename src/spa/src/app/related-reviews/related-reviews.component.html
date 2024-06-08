@@ -2,10 +2,13 @@
   <div class="row">
     <div class="col-6 col-lg-3">
       <div class="related-review-wrapper">
-        <div>
-          <img src="https://images.ratemyagent.com/ratemyagent/image/upload/q_auto:eco,f_auto,w_340,h_255/cdn-nz/265a00e4-edbf-ee11-abbf-0619d271b24a" class="rounded-1" alt="">
-          <div>
-            <rating [max]="5" [(ngModel)]="x" class="text-warning fs-3"></rating>
+        <div class="position-relative mb-3">
+          <img src="https://images.ratemyagent.com/ratemyagent/image/upload/q_auto:eco,f_auto,w_340,h_255/cdn-nz/265a00e4-edbf-ee11-abbf-0619d271b24a" class="rounded-1 img-fluid" alt="">
+          <div class="position-absolute top-0 m-2">
+            <div class="badge text-bg-secondary">Tenant review</div>
+          </div>
+          <div class="position-absolute bottom-0 ms-2">
+            <rating [max]="5" [(ngModel)]="x" [readonly]="true" class="text-warning fs-3"></rating>
           </div>
         </div>
         <p class="title fw-bold">Great management!</p>
@@ -17,18 +20,11 @@
           <div class="d-flex flex-column justify-content-center">
             <p class="fw-bold mb-0">Steven Foo</p>
             <div>
-              <rating [max]="1" [(ngModel)]="x" [customTemplate]="tt"></rating>
-
-              <ng-template #tt let-i="index" let-v="value">
-                <!-- <button class="btn btn-{{i < v ? 'warning' : 'default'}}"> -->
-                  4.6 {{i < v ? '&#9733;' : '&#9734;'}}
-                  <!-- </button> -->
-                  <span class="ms-3">(26 Reviews)</span>
-                </ng-template>
-              </div>
+              <strong>4.6</strong><rating [max]="1" [(ngModel)]="x" [readonly]="true" class="text-warning fs-5 ms-1"></rating><span class="ms-3">(26 Reviews)</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
