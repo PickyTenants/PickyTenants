@@ -16,15 +16,15 @@ export class AppComponent {
   }
 
   addReview() {
-    this.tsp.addReview().subscribe(data => {
-      console.log(data);
-    });
+    // this.tsp.addReview().subscribe(data => {
+    //   console.log(data);
+    // });
   }
 
   searchReviews() {
-    this.tsp.searchReviews().subscribe(data => {
-      console.log(data);
-    });
+    // this.tsp.searchReviews().subscribe(data => {
+    //   console.log(data);
+    // });
   }
 
   home(){
