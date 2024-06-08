@@ -5,7 +5,7 @@ import { ReviewDetailsComponent } from './review-details/review-details.componen
 
 const routes: Routes = [
   { path: '', component: SearchComponent },
-  { path: 'review-details', component: ReviewDetailsComponent },
+  { path: 'review-details/:id', component: ReviewDetailsComponent },
 ];
 
 @NgModule({
