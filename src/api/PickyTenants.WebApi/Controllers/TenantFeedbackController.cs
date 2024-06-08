@@ -1,5 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PickyTenants.WebApi.DataTransferObjects;
 using PickyTenants.WebApi.Entities;
 
 namespace PickyTenants.WebApi.Controllers;
@@ -10,60 +12,62 @@ public class TenantFeedbackController : ControllerBase
 {
     private readonly ILogger<TenantFeedbackController> _logger;
     private readonly PickyTenantsDbContext _dbContext;
+    private readonly IMapper _mapper;
     
-    public TenantFeedbackController(ILogger<TenantFeedbackController> logger, PickyTenantsDbContext dbContext)
+    public TenantFeedbackController(ILogger<TenantFeedbackController> logger, 
+        PickyTenantsDbContext dbContext, 
+        IMapper mapper)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _mapper = mapper;
     }
     
     [HttpPut]
-    public async Task<bool> AddReview()
+    public async Task<bool> AddReview([FromBody] AddReviewDto dto)
     {
-        try
-        {
-            var property = new Property
-            {
-                Address = "123 Main St",
-                Lat = 123,
-                Lng = 456
-            };
-            _dbContext.Properties.Add(property);
-            _dbContext.SaveChanges();
-            _dbContext.Reviews.Add(new Review
-            {
-                TenantName = "John Doe",
-                CreatedAt = DateTimeOffset.Now,
-                Title = "Great place",
-                Summary = "I loved it",
-                Details = "I would recommend this place to anyone",
-                PropertyId = property.Id
-            });
-            return await _dbContext.SaveChangesAsync() == 1;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        var property = await _dbContext
+            .Properties
+            .FirstOrDefaultAsync(p => p.Id == dto.PropertyId)
+            .ConfigureAwait(false);
+        var review = _mapper.Map<Review>(dto.Review);
+        review.Property = property;
+        await _dbContext.Reviews.AddAsync(review).ConfigureAwait(false);
+        return await _dbContext.SaveChangesAsync().ConfigureAwait(false) == 1;
     }
     
-    [HttpGet]
-    public async Task<IEnumerable<Review>> SearchReviews()
+    [HttpPost]
+    public async Task<PropertyDto> SearchReviews([FromBody] SearchPropertyDto dto)
     {
-        return await _dbContext
-            .Reviews
-            .ToListAsync()
+        var property = await _dbContext.Properties.Where(p => 
+            p.Lat == dto.Lat 
+            && p.Lng == dto.Lng
+            && p.UnitNumber == dto.UnitNumber
+            && p.StreetNumber == dto.StreetNumber
+            && p.Street == dto.Street
+            && p.Suburb == dto.Suburb
+            && p.Country == dto.Country
+            && p.PostalCode == dto.PostalCode)
+            .Include(p => p.PropertyReviews)
+            .FirstOrDefaultAsync()
             .ConfigureAwait(false);
+        if (property == null)
+        {
+            property = _mapper.Map<Property>(dto);
+            await _dbContext.Properties.AddAsync(property).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+        return _mapper.Map<PropertyDto>(property);
     }
     
+    
     [HttpGet]
-    public async Task<Review> GetReviewDetails(int id)
+    public async Task<ReviewDetailsDto> GetReviewDetails(int id)
     {
-        return await _dbContext
+        var review = await _dbContext
             .Reviews
-            .Where(r => r.Id == id)
-            .FirstAsync()
+            .FirstAsync(r => r.Id == id)
             .ConfigureAwait(false);
+        return _mapper.Map<ReviewDetailsDto>(review);
     }
 }

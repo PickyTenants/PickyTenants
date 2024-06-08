@@ -1,10 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+namespace PickyTenants.WebApi.DataTransferObjects;
 
-namespace PickyTenants.WebApi.Entities;
-
-public class Review
+public class ReviewDetailsDto
 {
-    [Key] 
     public long Id { get; set; }
 
     public string TenantName { get; set; }
@@ -18,7 +15,4 @@ public class Review
     public string PropertyManagementCompany { get; set; }
 
     public short AverageRating { get; set; }
-    
-    public Property Property { get; set; }
-    public long PropertyId { get; set; }
 }
