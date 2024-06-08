@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using PickyTenants.WebApi;
 
@@ -9,6 +10,8 @@ builder.Services.AddDbContext<PickyTenantsDbContext>(opts =>
 {
     opts.UseSqlite();
 });
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddCors(opts =>
 {
