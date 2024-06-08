@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { PropertyDto, SearchPropertyDto, TenantFeedbackServiceProxy } from '../../shared/service-proxies';
 
 @Component({
   selector: 'app-search',
@@ -9,7 +10,9 @@ export class SearchComponent implements OnInit {
 
   private autocomplete!: google.maps.places.Autocomplete;
 
-  constructor(private ngZone: NgZone) {}
+  private property!: PropertyDto;
+
+  constructor(private ngZone: NgZone, private tsp:TenantFeedbackServiceProxy) {}
 
   ngOnInit(): void {
     this.initAutocomplete();
@@ -29,8 +32,14 @@ export class SearchComponent implements OnInit {
   private onPlaceChanged(): void {
     const place = this.autocomplete.getPlace();
     console.log(place);
-
+    var dto = new SearchPropertyDto();
+    dto.lat = place?.geometry?.location?.lat() ?? -1 ;
+    dto.lng = place?.geometry?.location?.lng() ?? -1 ;
     
+    this.tsp.searchReviews(dto).subscribe(data => {
+      console.log(data);
+      this.property = data;
+    });
     // this.displayPlaceDetails(place);
   }
 
