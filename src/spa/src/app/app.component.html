@@ -335,6 +335,16 @@
 
 <main class="main">
   <div class="content">
+    <h1 (click)="home()">Home</h1>
+
+    <google-map
+    [center]="{ lat: 37.7749, lng: -122.4194 }"
+    [zoom]="10"
+    [height]="200"
+    [width]="1200"
+    [options]="{ disableDefaultUI: true }">
+    </google-map>
+
     <!-- <button (click)="addReview()">addReview</button><br>
     <button (click)="searchReviews()">searchReviews</button><br> -->
 <!-- 

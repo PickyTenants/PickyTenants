@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-review-summary',
@@ -6,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './review-summary.component.scss'
 })
 export class ReviewSummaryComponent {
+  constructor(private router:Router) {
+  }
 
+  navigate(){
+    this.router.navigate(['review-details']);
+  }
 }
