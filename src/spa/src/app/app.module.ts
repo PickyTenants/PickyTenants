@@ -10,6 +10,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { SearchComponent } from './search/search.component';
+import { ReviewSummaryComponent } from './review-summary/review-summary.component';
+import { NearbyPropertiesComponent } from './nearby-properties/nearby-properties.component';
+import { ReviewDetailsComponent } from './review-details/review-details.component';
 
 export function getRemoteServiceBaseUrl(): string {
   return 'http://localhost:5122';
@@ -17,7 +21,11 @@ export function getRemoteServiceBaseUrl(): string {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SearchComponent,
+    ReviewSummaryComponent,
+    NearbyPropertiesComponent,
+    ReviewDetailsComponent
   ],
   imports: [
     BrowserModule,
