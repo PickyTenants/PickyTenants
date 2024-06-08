@@ -1,7 +1,30 @@
-<div class="container">
+<div class="container my-5">
   <div class="row">
     <div class="col-6 col-lg-3">
-      
+      <div class="related-review-wrapper">
+        <div class="position-relative mb-3">
+          <img src="https://images.ratemyagent.com/ratemyagent/image/upload/q_auto:eco,f_auto,w_340,h_255/cdn-nz/265a00e4-edbf-ee11-abbf-0619d271b24a" class="rounded-1 img-fluid" alt="">
+          <div class="position-absolute top-0 m-2">
+            <div class="badge text-bg-secondary">Tenant review</div>
+          </div>
+          <div class="position-absolute bottom-0 ms-2">
+            <rating [max]="5" [(ngModel)]="x" [readonly]="true" class="text-warning fs-3"></rating>
+          </div>
+        </div>
+        <p class="title fw-bold">Great management!</p>
+        <p>Steven Field was absolutely awesome. He made my experience of selling my beloved home easy and stress free. It ended up being quick and straight forward. Many thanks 😃</p>
+        <div class="d-flex">
+          <div class="me-3">
+            <img src="https://images.ratemyagent.com/ratemyagent/image/upload/q_auto:eco,f_auto,w_200,h_200,c_limit,c_pad/cdn-nz/photo/2023-08-16-0310-4341-748337.png" alt="" class="rounded-pill" width="64" height="64">
+          </div>
+          <div class="d-flex flex-column justify-content-center">
+            <p class="fw-bold mb-0">Steven Foo</p>
+            <div>
+              <strong>4.6</strong><rating [max]="1" [(ngModel)]="x" [readonly]="true" class="text-warning fs-5 ms-1"></rating><span class="ms-3">(26 Reviews)</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

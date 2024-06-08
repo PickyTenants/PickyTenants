@@ -35,6 +35,12 @@ export class SearchComponent implements OnInit {
     var dto = new SearchPropertyDto();
     dto.lat = place?.geometry?.location?.lat() ?? -1 ;
     dto.lng = place?.geometry?.location?.lng() ?? -1 ;
+    dto.address = place?.formatted_address ?? '';
+    dto.postalCode = place?.address_components?.find(x => x.types.includes('postal_code'))?.long_name ?? '';
+    dto.street = place?.address_components?.find(x => x.types.includes('route'))?.long_name ?? '';
+    dto.streetNumber = parseInt(place?.address_components?.find(x => x.types.includes('street_number'))?.long_name ?? '-1');
+    dto.suburb = place?.address_components?.find(x => x.types.includes('sublocality'))?.long_name ?? '';
+    dto.unitNumber = parseInt(place?.address_components?.find(x => x.types.includes('subpremise'))?.long_name ?? '-1');
     
     this.tsp.searchReviews(dto).subscribe(data => {
       console.log(data);

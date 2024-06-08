@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { RatingModule } from 'ngx-bootstrap/rating';
 import { SearchComponent } from './search/search.component';
 import { ReviewSummaryComponent } from './review-summary/review-summary.component';
 import { NearbyPropertiesComponent } from './nearby-properties/nearby-properties.component';
@@ -37,6 +38,7 @@ export function getRemoteServiceBaseUrl(): string {
     GoogleMapsModule,
     BrowserAnimationsModule,
     AccordionModule.forRoot(),
+    RatingModule.forRoot(),
   ],
   providers: [
     { provide: api_url, useFactory: getRemoteServiceBaseUrl },
