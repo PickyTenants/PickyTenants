@@ -1,0 +1,97 @@
+<!-- AIzaSyDM7VArZaxZPgkf4I2LQVCW2GJ1qQk0SRo -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Address Autocomplete Demo</title>
+    <style>
+        /* Simple styling for the input field */
+        #address {
+            width: 300px;
+            padding: 10px;
+            margin: 20px;
+        }
+        #results {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .result-item {
+            margin-bottom: 10px;
+        }
+    </style>
+    <!-- Include the Google Maps JavaScript API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM7VArZaxZPgkf4I2LQVCW2GJ1qQk0SRo&libraries=places"></script>
+    <script>
+        let autocomplete;
+
+        function initAutocomplete() {
+            // Get the input field
+            var input = document.getElementById('address');
+
+            // Create the autocomplete object with componentRestrictions
+            autocomplete = new google.maps.places.Autocomplete(input, {
+                componentRestrictions: { country: 'nz' }
+            });
+
+            // Set up a listener for when the user selects an address
+            autocomplete.addListener('place_changed', onPlaceChanged);
+        }
+
+        function onPlaceChanged() {
+            var place = autocomplete.getPlace();
+            
+            // Display the results on the page
+            displayPlaceDetails(place);
+        }
+
+        function displayPlaceDetails(place) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ''; // Clear previous results
+
+            // Display basic place details
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+
+            if (place.name) {
+                resultItem.innerHTML += "<strong>Name:</strong> " +place.name+"<br>";
+            }
+
+            if (place.formatted_address) {
+                resultItem.innerHTML += "<strong>Address:</strong> "+place.formatted_address+"<br>";
+            }
+            
+            if (place.locality) {
+                resultItem.innerHTML += "<strong>City:</strong> "+place.locality+"<br>";
+            }
+            
+            if (place.geometry && place.geometry.location) {
+                resultItem.innerHTML += "<strong>Location:</strong> "+place.geometry.location.lat()+","+ place.geometry.location.lng() +"<br>";
+            }
+
+            if (place.types) {
+                resultItem.innerHTML += "<strong>Types:</strong> "+place.types.join(', ')+"<br>";
+            }
+
+            if (place.website) {
+                resultItem.innerHTML += "<strong>Website:</strong> <a href="+place.website+" target=\"_blank\">${place.website}</a><br>";
+            }
+
+            if (place.photos && place.photos.length > 0) {
+                const photoUrl = place.photos[0].getUrl({ maxWidth: 100, maxHeight: 100 });
+                resultItem.innerHTML += "<strong>Photo:</strong><br><img src=\"${photoUrl}\" alt=\"Place photo\"><br>";
+            }
+
+            resultsDiv.appendChild(resultItem);
+        }
+
+        // Initialize the Google Places Autocomplete when the window loads
+        window.onload = function() {
+            initAutocomplete();
+        };
+    </script>
+</head>
+<body>
+    <h2>Google Address Autocomplete Demo</h2>
+    <input id="address" type="text" placeholder="Enter your address">
+    <div id="results"></div>
+</body>
+</html>

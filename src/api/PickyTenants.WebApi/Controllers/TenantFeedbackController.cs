@@ -22,24 +22,25 @@ public class TenantFeedbackController : ControllerBase
     {
         try
         {
-            var property = new Property
-            {
-                Address = "123 Main St",
-                Lat = 123,
-                Lng = 456
-            };
-            _dbContext.Properties.Add(property);
-            _dbContext.SaveChanges();
-            _dbContext.Reviews.Add(new Review
-            {
-                TenantName = "John Doe",
-                CreatedAt = DateTimeOffset.Now,
-                Title = "Great place",
-                Summary = "I loved it",
-                Details = "I would recommend this place to anyone",
-                PropertyId = property.Id
-            });
-            return await _dbContext.SaveChangesAsync() == 1;
+            // var property = new Property
+            // {
+            //     Address = "123 Main St",
+            //     Lat = 123,
+            //     Lng = 456
+            // };
+            // _dbContext.Properties.Add(property);
+            // await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            // _dbContext.Reviews.Add(new Review
+            // {
+            //     TenantName = "John Doe",
+            //     CreatedAt = DateTimeOffset.Now,
+            //     Title = "Great place",
+            //     Summary = "I loved it",
+            //     Details = "I would recommend this place to anyone",
+            //     PropertyId = property.Id
+            // });
+            // return await _dbContext.SaveChangesAsync() == 1;
+            return false;
         }
         catch (Exception e)
         {
@@ -49,13 +50,40 @@ public class TenantFeedbackController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IEnumerable<Review>> SearchReviews()
+    public async Task<Property> SearchReviews([FromBody] Property propertyRequest)
     {
-        return await _dbContext
-            .Reviews
-            .ToListAsync()
+        var property = await _dbContext.Properties.Where(p => 
+            p.Lat == propertyRequest.Lat 
+            && p.Lng == propertyRequest.Lng
+            && p.UnitNumber == propertyRequest.UnitNumber
+            && p.StreetNumber == propertyRequest.StreetNumber
+            && p.Street == propertyRequest.Street
+            && p.Suburb == propertyRequest.Suburb
+            && p.Country == propertyRequest.Country
+            && p.PostalCode == propertyRequest.PostalCode)
+            .Include(p => p.PropertyReviews)
+            .FirstOrDefaultAsync()
             .ConfigureAwait(false);
+        if (property == null)
+        {
+            property = new Property
+            {
+                Lat = propertyRequest.Lat,
+                Lng = propertyRequest.Lng,
+                Address = propertyRequest.Address,
+                UnitNumber = propertyRequest.UnitNumber,
+                StreetNumber = propertyRequest.StreetNumber,
+                Street = propertyRequest.Street,
+                Suburb = propertyRequest.Suburb,
+                Country = propertyRequest.Country,
+                PostalCode = propertyRequest.PostalCode
+            };
+            await _dbContext.Properties.AddAsync(property).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+        return property;
     }
+    
     
     [HttpGet]
     public async Task<Review> GetReviewDetails(int id)
