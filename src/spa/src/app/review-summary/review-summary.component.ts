@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
   styleUrl: './review-summary.component.scss'
 })
 export class ReviewSummaryComponent {
+ 
+  x = 1;
   constructor(private router:Router) {
   }
 
-  navigate(){
-    this.router.navigate(['review-details']);
-  }
+ 
 }
