@@ -24,7 +24,7 @@ public class TenantFeedbackController : ControllerBase
     }
     
     [HttpPut]
-    public async Task<bool> AddReview([FromBody] CreateReviewRequestDto dto)
+    public async Task<bool> AddReview([FromBody] AddReviewDto dto)
     {
         var property = await _dbContext
             .Properties
@@ -37,34 +37,23 @@ public class TenantFeedbackController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<PropertyDto> SearchReviews([FromBody] PropertyDto propertyRequest)
+    public async Task<PropertyDto> SearchReviews([FromBody] SearchPropertyDto dto)
     {
         var property = await _dbContext.Properties.Where(p => 
-            p.Lat == propertyRequest.Lat 
-            && p.Lng == propertyRequest.Lng
-            && p.UnitNumber == propertyRequest.UnitNumber
-            && p.StreetNumber == propertyRequest.StreetNumber
-            && p.Street == propertyRequest.Street
-            && p.Suburb == propertyRequest.Suburb
-            && p.Country == propertyRequest.Country
-            && p.PostalCode == propertyRequest.PostalCode)
+            p.Lat == dto.Lat 
+            && p.Lng == dto.Lng
+            && p.UnitNumber == dto.UnitNumber
+            && p.StreetNumber == dto.StreetNumber
+            && p.Street == dto.Street
+            && p.Suburb == dto.Suburb
+            && p.Country == dto.Country
+            && p.PostalCode == dto.PostalCode)
             .Include(p => p.PropertyReviews)
             .FirstOrDefaultAsync()
             .ConfigureAwait(false);
         if (property == null)
         {
-            property = new Property
-            {
-                Lat = propertyRequest.Lat,
-                Lng = propertyRequest.Lng,
-                Address = propertyRequest.Address,
-                UnitNumber = propertyRequest.UnitNumber,
-                StreetNumber = propertyRequest.StreetNumber,
-                Street = propertyRequest.Street,
-                Suburb = propertyRequest.Suburb,
-                Country = propertyRequest.Country,
-                PostalCode = propertyRequest.PostalCode
-            };
+            property = _mapper.Map<Property>(dto);
             await _dbContext.Properties.AddAsync(property).ConfigureAwait(false);
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         }

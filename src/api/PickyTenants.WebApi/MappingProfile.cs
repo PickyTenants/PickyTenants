@@ -10,6 +10,7 @@ public class MappingProfile: Profile
     {
         CreateMap<Property, PropertyDto>();
         CreateMap<PropertyDto, Property>();
+        CreateMap<SearchPropertyDto, Property>();
         
         CreateMap<Review, ReviewSummaryDto>();
         CreateMap<Review, ReviewDetailsDto>();

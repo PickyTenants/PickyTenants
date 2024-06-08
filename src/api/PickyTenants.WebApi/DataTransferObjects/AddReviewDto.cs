@@ -1,6 +1,6 @@
 namespace PickyTenants.WebApi.DataTransferObjects;
 
-public class CreateReviewRequestDto
+public class AddReviewDto
 {
     public long PropertyId { get; set; }
 
