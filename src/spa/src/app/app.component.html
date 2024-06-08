@@ -335,15 +335,44 @@
 
 <main class="main">
   <div class="content">
-    <h1 (click)="home()">Home</h1>
+    <header class="py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col d-flex align-items-center">
+            <h1 (click)="home()">RateMyLandlord</h1>
+          </div>
+          <div class="col d-flex justify-content-end align-items-center">
+            <div class="d-flex justify-content-between gap-3">
+              <button href="#" class="btn btn-outline-secondary">Log in</button>
+              <button class="btn btn-primary">Sign up</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
 
-    <google-map
+    <app-search></app-search>
+
+    <content class="position-relative" style="top: -100px;">
+      <div class="container bg-white rounded-5 p-4" style=" min-height: 20vh">
+        <h1>Test</h1>
+
+        <app-review-summary></app-review-summary>
+
+        <app-nearby-properties></app-nearby-properties>
+      </div>
+    </content>
+
+
+
+
+<!--     <google-map
     [center]="{ lat: 37.7749, lng: -122.4194 }"
     [zoom]="10"
     [height]="200"
     [width]="1200"
     [options]="{ disableDefaultUI: true }">
-    </google-map>
+    </google-map> -->
 
     <!-- <button (click)="addReview()">addReview</button><br>
     <button (click)="searchReviews()">searchReviews</button><br> -->
@@ -370,7 +399,7 @@
   </accordion> -->
 
 
-  <router-outlet />
+  <!-- <router-outlet /> -->
 
   </div>
 </main>
