@@ -14,14 +14,14 @@ export class RelatedReviewsComponent {
   x = 1;
 
   constructor(private router: Router) {
-    
+
   }
 
-  addReview(){
-    this.router.navigate(['/review-details', 'new', this.property?.id]);
+  addReview() {
+    this.router.navigate(['/review-details'], { queryParams: { action: 'new', identifier: this.property?.id } });
   }
 
-  showDetails(review: ReviewSummaryDto){
-    this.router.navigate(['/review-details', 'details', review.id]);
+  showDetails(review: ReviewSummaryDto) {
+    this.router.navigate(['/review-details'], { queryParams: { action: 'details', id: review.id } });
   }
 }

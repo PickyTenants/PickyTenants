@@ -16,9 +16,14 @@ export class ReviewDetailsComponent {
   constructor(private route: ActivatedRoute
     , private router: Router
     , private tsp: TenantFeedbackServiceProxy) {
-    this.route.params.subscribe(params => {
-      this.action = params['action'];
-      this.identifier = params['identifier'];
+    
+
+    this.route.queryParamMap.subscribe(queryParamMap => {
+      this.action = queryParamMap.get('action')!;
+      this.identifier = parseInt(queryParamMap.get('identifier')!);
+      console.log('params',queryParamMap);
+      console.log('action',this.action);
+      console.log('identifier',this.identifier);
       if (this.action == 'new') {
         this.title = 'New Review';
         this.reviewDetails = new ReviewDetailsDto();
