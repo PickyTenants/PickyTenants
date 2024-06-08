@@ -27,16 +27,21 @@ export class TenantFeedbackServiceProxy {
     }
 
     /**
+     * @param body (optional) 
      * @return Success
      */
-    addReview(): Observable<boolean> {
+    addReview(body: AddReviewDto | undefined): Observable<boolean> {
         let url_ = this.baseUrl + "/api/TenantFeedback/AddReview";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "text/plain"
             })
         };
@@ -79,35 +84,40 @@ export class TenantFeedbackServiceProxy {
     }
 
     /**
+     * @param body (optional) 
      * @return Success
      */
-    searchReviews(): Observable<Review[]> {
+    searchReviews(body: SearchPropertyDto | undefined): Observable<PropertyDto> {
         let url_ = this.baseUrl + "/api/TenantFeedback/SearchReviews";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processSearchReviews(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
                     return this.processSearchReviews(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Review[]>;
+                    return _observableThrow(e) as any as Observable<PropertyDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Review[]>;
+                return _observableThrow(response_) as any as Observable<PropertyDto>;
         }));
     }
 
-    protected processSearchReviews(response: HttpResponseBase): Observable<Review[]> {
+    protected processSearchReviews(response: HttpResponseBase): Observable<PropertyDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -118,14 +128,7 @@ export class TenantFeedbackServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(Review.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = PropertyDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -133,14 +136,14 @@ export class TenantFeedbackServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return new Observable();
+        return _observableOf<PropertyDto>(null as any);
     }
 
     /**
      * @param id (optional) 
      * @return Success
      */
-    getReviewDetails(id: number | undefined): Observable<Review> {
+    getReviewDetails(id: number | undefined): Observable<ReviewDetailsDto> {
         let url_ = this.baseUrl + "/api/TenantFeedback/GetReviewDetails?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -163,14 +166,14 @@ export class TenantFeedbackServiceProxy {
                 try {
                     return this.processGetReviewDetails(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Review>;
+                    return _observableThrow(e) as any as Observable<ReviewDetailsDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Review>;
+                return _observableThrow(response_) as any as Observable<ReviewDetailsDto>;
         }));
     }
 
-    protected processGetReviewDetails(response: HttpResponseBase): Observable<Review> {
+    protected processGetReviewDetails(response: HttpResponseBase): Observable<ReviewDetailsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -181,7 +184,7 @@ export class TenantFeedbackServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Review.fromJS(resultData200);
+            result200 = ReviewDetailsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -189,18 +192,71 @@ export class TenantFeedbackServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Review>(null as any);
+        return _observableOf<ReviewDetailsDto>(null as any);
     }
 }
 
-export class Property implements IProperty {
+export class AddReviewDto implements IAddReviewDto {
+    propertyId!: number;
+    review!: ReviewDetailsDto;
+
+    constructor(data?: IAddReviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.propertyId = _data["propertyId"];
+            this.review = _data["review"] ? ReviewDetailsDto.fromJS(_data["review"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AddReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["propertyId"] = this.propertyId;
+        data["review"] = this.review ? this.review.toJSON() : <any>undefined;
+        return data;
+    }
+
+    clone(): AddReviewDto {
+        const json = this.toJSON();
+        let result = new AddReviewDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAddReviewDto {
+    propertyId: number;
+    review: ReviewDetailsDto;
+}
+
+export class PropertyDto implements IPropertyDto {
     id!: number;
     lat!: number;
     lng!: number;
     address!: string | undefined;
-    propertyReviews!: Review[] | undefined;
+    unitNumber!: number;
+    streetNumber!: number;
+    street!: string | undefined;
+    suburb!: string | undefined;
+    country!: string | undefined;
+    postalCode!: string | undefined;
+    propertyReviews!: ReviewSummaryDto[] | undefined;
 
-    constructor(data?: IProperty) {
+    constructor(data?: IPropertyDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -215,17 +271,23 @@ export class Property implements IProperty {
             this.lat = _data["lat"];
             this.lng = _data["lng"];
             this.address = _data["address"];
+            this.unitNumber = _data["unitNumber"];
+            this.streetNumber = _data["streetNumber"];
+            this.street = _data["street"];
+            this.suburb = _data["suburb"];
+            this.country = _data["country"];
+            this.postalCode = _data["postalCode"];
             if (Array.isArray(_data["propertyReviews"])) {
                 this.propertyReviews = [] as any;
                 for (let item of _data["propertyReviews"])
-                    this.propertyReviews!.push(Review.fromJS(item));
+                    this.propertyReviews!.push(ReviewSummaryDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): Property {
+    static fromJS(data: any): PropertyDto {
         data = typeof data === 'object' ? data : {};
-        let result = new Property();
+        let result = new PropertyDto();
         result.init(data);
         return result;
     }
@@ -236,6 +298,12 @@ export class Property implements IProperty {
         data["lat"] = this.lat;
         data["lng"] = this.lng;
         data["address"] = this.address;
+        data["unitNumber"] = this.unitNumber;
+        data["streetNumber"] = this.streetNumber;
+        data["street"] = this.street;
+        data["suburb"] = this.suburb;
+        data["country"] = this.country;
+        data["postalCode"] = this.postalCode;
         if (Array.isArray(this.propertyReviews)) {
             data["propertyReviews"] = [];
             for (let item of this.propertyReviews)
@@ -244,33 +312,41 @@ export class Property implements IProperty {
         return data;
     }
 
-    clone(): Property {
+    clone(): PropertyDto {
         const json = this.toJSON();
-        let result = new Property();
+        let result = new PropertyDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IProperty {
+export interface IPropertyDto {
     id: number;
     lat: number;
     lng: number;
     address: string | undefined;
-    propertyReviews: Review[] | undefined;
+    unitNumber: number;
+    streetNumber: number;
+    street: string | undefined;
+    suburb: string | undefined;
+    country: string | undefined;
+    postalCode: string | undefined;
+    propertyReviews: ReviewSummaryDto[] | undefined;
 }
 
-export class Review implements IReview {
+export class ReviewDetailsDto implements IReviewDetailsDto {
     id!: number;
     tenantName!: string | undefined;
     createdAt!: Date;
     title!: string | undefined;
     summary!: string | undefined;
     details!: string | undefined;
-    property!: Property;
-    propertyId!: number;
+    landloardName!: string | undefined;
+    propertyManagerName!: string | undefined;
+    propertyManagementCompany!: string | undefined;
+    averageRating!: number;
 
-    constructor(data?: IReview) {
+    constructor(data?: IReviewDetailsDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -287,14 +363,16 @@ export class Review implements IReview {
             this.title = _data["title"];
             this.summary = _data["summary"];
             this.details = _data["details"];
-            this.property = _data["property"] ? Property.fromJS(_data["property"]) : <any>undefined;
-            this.propertyId = _data["propertyId"];
+            this.landloardName = _data["landloardName"];
+            this.propertyManagerName = _data["propertyManagerName"];
+            this.propertyManagementCompany = _data["propertyManagementCompany"];
+            this.averageRating = _data["averageRating"];
         }
     }
 
-    static fromJS(data: any): Review {
+    static fromJS(data: any): ReviewDetailsDto {
         data = typeof data === 'object' ? data : {};
-        let result = new Review();
+        let result = new ReviewDetailsDto();
         result.init(data);
         return result;
     }
@@ -307,28 +385,182 @@ export class Review implements IReview {
         data["title"] = this.title;
         data["summary"] = this.summary;
         data["details"] = this.details;
-        data["property"] = this.property ? this.property.toJSON() : <any>undefined;
-        data["propertyId"] = this.propertyId;
+        data["landloardName"] = this.landloardName;
+        data["propertyManagerName"] = this.propertyManagerName;
+        data["propertyManagementCompany"] = this.propertyManagementCompany;
+        data["averageRating"] = this.averageRating;
         return data;
     }
 
-    clone(): Review {
+    clone(): ReviewDetailsDto {
         const json = this.toJSON();
-        let result = new Review();
+        let result = new ReviewDetailsDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IReview {
+export interface IReviewDetailsDto {
     id: number;
     tenantName: string | undefined;
     createdAt: Date;
     title: string | undefined;
     summary: string | undefined;
     details: string | undefined;
-    property: Property;
-    propertyId: number;
+    landloardName: string | undefined;
+    propertyManagerName: string | undefined;
+    propertyManagementCompany: string | undefined;
+    averageRating: number;
+}
+
+export class ReviewSummaryDto implements IReviewSummaryDto {
+    id!: number;
+    tenantName!: string | undefined;
+    createdAt!: Date;
+    title!: string | undefined;
+    summary!: string | undefined;
+    landloardName!: string | undefined;
+    propertyManagerName!: string | undefined;
+    propertyManagementCompany!: string | undefined;
+    averageRating!: number;
+
+    constructor(data?: IReviewSummaryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.tenantName = _data["tenantName"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.title = _data["title"];
+            this.summary = _data["summary"];
+            this.landloardName = _data["landloardName"];
+            this.propertyManagerName = _data["propertyManagerName"];
+            this.propertyManagementCompany = _data["propertyManagementCompany"];
+            this.averageRating = _data["averageRating"];
+        }
+    }
+
+    static fromJS(data: any): ReviewSummaryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReviewSummaryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["tenantName"] = this.tenantName;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["title"] = this.title;
+        data["summary"] = this.summary;
+        data["landloardName"] = this.landloardName;
+        data["propertyManagerName"] = this.propertyManagerName;
+        data["propertyManagementCompany"] = this.propertyManagementCompany;
+        data["averageRating"] = this.averageRating;
+        return data;
+    }
+
+    clone(): ReviewSummaryDto {
+        const json = this.toJSON();
+        let result = new ReviewSummaryDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IReviewSummaryDto {
+    id: number;
+    tenantName: string | undefined;
+    createdAt: Date;
+    title: string | undefined;
+    summary: string | undefined;
+    landloardName: string | undefined;
+    propertyManagerName: string | undefined;
+    propertyManagementCompany: string | undefined;
+    averageRating: number;
+}
+
+export class SearchPropertyDto implements ISearchPropertyDto {
+    lat!: number;
+    lng!: number;
+    address!: string | undefined;
+    unitNumber!: number;
+    streetNumber!: number;
+    street!: string | undefined;
+    suburb!: string | undefined;
+    country!: string | undefined;
+    postalCode!: string | undefined;
+
+    constructor(data?: ISearchPropertyDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.lat = _data["lat"];
+            this.lng = _data["lng"];
+            this.address = _data["address"];
+            this.unitNumber = _data["unitNumber"];
+            this.streetNumber = _data["streetNumber"];
+            this.street = _data["street"];
+            this.suburb = _data["suburb"];
+            this.country = _data["country"];
+            this.postalCode = _data["postalCode"];
+        }
+    }
+
+    static fromJS(data: any): SearchPropertyDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchPropertyDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lat"] = this.lat;
+        data["lng"] = this.lng;
+        data["address"] = this.address;
+        data["unitNumber"] = this.unitNumber;
+        data["streetNumber"] = this.streetNumber;
+        data["street"] = this.street;
+        data["suburb"] = this.suburb;
+        data["country"] = this.country;
+        data["postalCode"] = this.postalCode;
+        return data;
+    }
+
+    clone(): SearchPropertyDto {
+        const json = this.toJSON();
+        let result = new SearchPropertyDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISearchPropertyDto {
+    lat: number;
+    lng: number;
+    address: string | undefined;
+    unitNumber: number;
+    streetNumber: number;
+    street: string | undefined;
+    suburb: string | undefined;
+    country: string | undefined;
+    postalCode: string | undefined;
 }
 
 export class SwaggerException extends Error {
