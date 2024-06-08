@@ -14,6 +14,7 @@ import { SearchComponent } from './search/search.component';
 import { ReviewSummaryComponent } from './review-summary/review-summary.component';
 import { NearbyPropertiesComponent } from './nearby-properties/nearby-properties.component';
 import { ReviewDetailsComponent } from './review-details/review-details.component';
+import { RelatedReviewsComponent } from './related-reviews/related-reviews.component';
 
 export function getRemoteServiceBaseUrl(): string {
   return 'http://localhost:5122';
@@ -25,7 +26,8 @@ export function getRemoteServiceBaseUrl(): string {
     SearchComponent,
     ReviewSummaryComponent,
     NearbyPropertiesComponent,
-    ReviewDetailsComponent
+    ReviewDetailsComponent,
+    RelatedReviewsComponent
   ],
   imports: [
     BrowserModule,

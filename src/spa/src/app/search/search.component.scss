@@ -1,0 +1,34 @@
+.hero-image{
+  background-image: url('https://themesflat.co/html/homzen/images/slider/slider-1.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 50vh;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Change the color and opacity as needed */
+  }
+
+  .search-wrapper{
+    z-index: 1;
+    margin-top: -50px;
+
+    .search-field{
+      background-color: #fff;
+      width: 60vw;
+      padding: 30px;
+      border-radius: 30px;
+    }
+  }
+}
