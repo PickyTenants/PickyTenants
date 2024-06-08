@@ -38,4 +38,4 @@ jobs:
 
       - name: Deploy to Google App Engine
         run: |
-          gcloud app deploy src/api/PickyTenants.WebApi/PickyTenants.WebApi.csproj/app.yaml
+          gcloud app deploy src/api/PickyTenants.WebApi/app.yaml
