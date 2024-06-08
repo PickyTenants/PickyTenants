@@ -36,7 +36,7 @@ public class TenantFeedbackController : ControllerBase
         return await _dbContext.SaveChangesAsync().ConfigureAwait(false) == 1;
     }
     
-    [HttpGet]
+    [HttpPost]
     public async Task<PropertyDto> SearchReviews([FromBody] SearchPropertyDto dto)
     {
         var property = await _dbContext.Properties.Where(p => 
