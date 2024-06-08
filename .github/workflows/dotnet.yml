@@ -24,5 +24,8 @@ jobs:
       run: dotnet restore src/api/PickyTenants.WebApi/PickyTenants.WebApi.csproj
     - name: Build
       run: dotnet build src/api/PickyTenants.WebApi/PickyTenants.WebApi.csproj --no-restore
+    - name: Publish
+      run: dotnet publish src/api/PickyTenants.WebApi/PickyTenants.WebApi.csproj  -o ./publish
+      
 #    - name: Test
 #      run: dotnet test --no-build --verbosity normal
