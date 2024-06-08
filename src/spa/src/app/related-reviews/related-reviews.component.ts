@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { PropertyDto } from '../../shared/service-proxies';
 
 @Component({
   selector: 'app-related-reviews',
@@ -7,5 +8,15 @@ import { Component } from '@angular/core';
 })
 
 export class RelatedReviewsComponent {
- x = 1;
+  @Input()
+  public property: PropertyDto | undefined;
+  x = 1;
+
+  constructor() {
+    
+  }
+
+  addReview(){
+    
+  }
 }
