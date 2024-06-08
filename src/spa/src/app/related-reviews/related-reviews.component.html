@@ -3,7 +3,8 @@
    <div class="row">
 
       <ng-component *ngIf="property && property.propertyReviews && property.propertyReviews.length > 0">
-         <app-review-summary class="col-6 col-lg-3" *ngFor="let review of property.propertyReviews" [review]="review">
+         <app-review-summary class="col-6 col-lg-3" *ngFor="let review of property.propertyReviews" 
+         (click)="showDetails(review)" [review]="review">
          </app-review-summary>
       </ng-component>
 

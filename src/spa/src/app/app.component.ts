@@ -11,23 +11,12 @@ export class AppComponent {
   title = 'spa';
 
 
-  constructor(private tsp: TenantFeedbackServiceProxy, private router:Router) {
-    
+  constructor(private tsp: TenantFeedbackServiceProxy
+    , private router: Router) {
+
   }
 
-  addReview() {
-    // this.tsp.addReview().subscribe(data => {
-    //   console.log(data);
-    // });
-  }
-
-  searchReviews() {
-    // this.tsp.searchReviews().subscribe(data => {
-    //   console.log(data);
-    // });
-  }
-
-  home(){
+  home() {
     this.router.navigate(['']);
   }
 

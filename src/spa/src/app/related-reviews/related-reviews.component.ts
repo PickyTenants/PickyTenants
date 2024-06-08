@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { PropertyDto } from '../../shared/service-proxies';
+import { PropertyDto, ReviewSummaryDto } from '../../shared/service-proxies';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-related-reviews',
@@ -12,11 +13,15 @@ export class RelatedReviewsComponent {
   public property: PropertyDto | undefined;
   x = 1;
 
-  constructor() {
+  constructor(private router: Router) {
     
   }
 
   addReview(){
-    
+    this.router.navigate(['/review-details', 'new', this.property?.id]);
+  }
+
+  showDetails(review: ReviewSummaryDto){
+    this.router.navigate(['/review-details', 'details', review.id]);
   }
 }

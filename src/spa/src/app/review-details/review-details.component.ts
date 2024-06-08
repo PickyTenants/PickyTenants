@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AddReviewDto, ReviewDetailsDto, TenantFeedbackServiceProxy } from '../../shared/service-proxies';
 
 @Component({
   selector: 'app-review-details',
@@ -7,17 +8,39 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './review-details.component.scss'
 })
 export class ReviewDetailsComponent {
-  identifier: string|number|undefined = undefined;
-  title:string|undefined = undefined;
+  title: string | undefined = undefined;
+  action: string | undefined = undefined;
+  identifier: number = -1;
+  reviewDetails: ReviewDetailsDto = new ReviewDetailsDto();
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute
+    , private router: Router
+    , private tsp: TenantFeedbackServiceProxy) {
     this.route.params.subscribe(params => {
-      this.identifier = params['id'];
-      if(this.identifier == 'new') {
+      this.action = params['action'];
+      this.identifier = params['identifier'];
+      if (this.action == 'new') {
         this.title = 'New Review';
-      }else{
+        this.reviewDetails = new ReviewDetailsDto();
+      } else {
         this.title = 'Show Review';
+        if (this.identifier) {
+          this.tsp.getReviewDetails(this.identifier).subscribe(data => {
+            console.log(data);
+            this.reviewDetails = data;
+          });
+        }
       }
+    });
+  }
+
+
+  sendReview() {
+    var dto = new AddReviewDto();
+    dto.propertyId = this.identifier?? -1;
+    dto.review = this.reviewDetails;
+    this.tsp.addReview(dto).subscribe(data => {
+      console.log(data);
     });
   }
 }
