@@ -337,6 +337,15 @@
   <div class="content">
     <button (click)="addReview()">addReview</button><br>
     <button (click)="searchReviews()">searchReviews</button><br>
+
+    <google-map
+    [center]="{ lat: 37.7749, lng: -122.4194 }"
+    [zoom]="10"
+    [options]="{ disableDefaultUI: true }"
+    >
+    <!-- Add markers, info windows, and other map components here -->
+  </google-map>
+
   </div>
 </main>
 

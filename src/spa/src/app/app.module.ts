@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 export function getRemoteServiceBaseUrl(): string {
   return 'http://localhost:5122';
@@ -20,7 +21,8 @@ export function getRemoteServiceBaseUrl(): string {
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    GoogleMapsModule
   ],
   providers: [
     { provide: api_url, useFactory: getRemoteServiceBaseUrl },
