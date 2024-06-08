@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 export function getRemoteServiceBaseUrl(): string {
   return 'http://localhost:5122';
@@ -22,7 +24,9 @@ export function getRemoteServiceBaseUrl(): string {
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    BrowserAnimationsModule,
+    AccordionModule.forRoot(),
   ],
   providers: [
     { provide: api_url, useFactory: getRemoteServiceBaseUrl },
