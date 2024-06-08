@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './related-reviews.component.html',
   styleUrl: './related-reviews.component.scss'
 })
-export class RelatedReviewsComponent {
 
+export class RelatedReviewsComponent {
+ x = 1;
 }
