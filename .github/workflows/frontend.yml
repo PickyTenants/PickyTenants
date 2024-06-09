@@ -1,0 +1,39 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main # Deploy only when changes are pushed to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Checkout spa code directory
+        run: cd src/spa
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for GCR
+        run: echo "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t gcr.io/picky-tennants/my-angular-app:$GITHUB_SHA .
+          docker push gcr.io/picky-tennants/my-angular-app:$GITHUB_SHA
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: my-angular-app
+          image: gcr.io/picky-tennants/my-angular-app:$GITHUB_SHA
